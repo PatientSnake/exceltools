@@ -12,28 +12,28 @@ populating spreadsheets programmatically.
 
 ```python
 
-from exceltools import exceltools
+import exceltools
 import pandas as pd
 
 data = pd.read_csv("https://raw.githubusercontent.com/mwaskom/seaborn-data/master/iris.csv")
 
 # Open an existing workbook / Create a new one
 excel = exceltools.ExcelSpreadSheet()
-excel.open("C:/Users/daflin/Documents/master_file.xlsx")
+excel.open("C:/Users/generic_user/Documents/master_file.xlsx")
 
 # Write data
-excel.write_dataframe(data, sheet="Sheet 1", startcol=1, startrow=2, headers=True)
+excel.write_dataframe(data, sheet=1, start_col=1, start_row=2, headers=True)
 excel.write_cell("SomeString", sheet=1, row=1, col="A")
+
+# Apply formatting
+excel.format_range(sheet=1, excel_range="A1:F1", interior_colour=(255, 0, 0))
+excel.conditional_formatting(sheet=1, excel_range="A3:A10", logic="equal_to", value=5, interior_colour=(125, 125, 125), font_colour=(255, 255, 255))
 
 # Protect worksheet
 print(excel.get_sheet_names())
 excel.protect_sheet(sheet=1, password="P@ssW0rd")
 
-# Apply formatting
-excel.format_range(excel_range="A1:F1", interior_colour=(255, 255, 255))
-excel.conditional_formatting(excel_range="A2:A5", logic="equal_to", value=5)
-
 # Save and close
-excel.save_xlsx("C:/Users/daflin/Documents/new_file.xlsx")
+excel.save_xlsx("C:/Users/generic_user/Documents/new_file.xlsx")
 excel.close(save_changes=False)
 ```
