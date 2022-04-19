@@ -13,7 +13,6 @@ populating spreadsheets programmatically.
 """
 import os
 import re
-import ast
 import sys
 import shutil
 import warnings
@@ -31,10 +30,10 @@ from win32com.client import constants as c
 
 # Local modules
 import exceltools.errors as err
-from range import Range
-from column import Column
-from cell import CellReference
-from utils import col2num, num2col, excel_date, rgb2hex
+from exceltools.range import Range
+from exceltools.column import Column
+from exceltools.cell import CellReference
+from exceltools.utils import col2num, num2col, excel_date, rgb2hex
 
 
 class ExcelSpreadSheet:
@@ -595,7 +594,7 @@ class ExcelSpreadSheet:
         for i in [keys for keys in self.format_args["Condition"].keys()]:  # Add required values
             if i not in kwargs.keys():
                 try:
-                    kwargs[i] = ast.literal_eval(i)
+                    kwargs[i] = self.format_args["Condition"][i]
                 except NameError:
                     kwargs[i] = self.null_arg
         self._validate_workbook()

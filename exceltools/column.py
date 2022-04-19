@@ -3,7 +3,7 @@ A module to define the Column class
 """
 import re
 
-from exceltools import col2num, num2col
+from exceltools.utils import col2num, num2col
 
 
 class Column:
