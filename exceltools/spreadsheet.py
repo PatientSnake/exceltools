@@ -34,67 +34,7 @@ import exceltools.errors as err
 from range import Range
 from column import Column
 from cell import CellReference
-
-
-def col2num(col_str: str) -> int:
-    """
-    Convert an Excel column reference to an integer
-    e.g. "A" = 1, "B" = 2 e.t.c.
-    """
-    if not isinstance(col_str, str):
-        raise ValueError("Invalid data type supplied. Must supply a scalar string")
-    expn = 0
-    col_num = 0
-    for char in reversed(col_str):
-        col_num += (ord(char) - ord("A") + 1) * (26 ** expn)
-        expn += 1
-    return col_num
-
-
-def num2col(col_int: int) -> str:
-    """
-    Convert an Excel column index to a string
-    e.g. 1 == "A", 27 == "AA" e.t.c.
-    """
-    if not isinstance(col_int, int):
-        raise ValueError("Invalid data type supplied. Must supply an integer")
-    col_str = ""
-    while col_int > 0:
-        col_int, remainder = divmod(col_int - 1, 26)
-        col_str = chr(65 + remainder) + col_str
-    return col_str
-
-
-def rgb2hex(rgb: list | tuple) -> int:
-    """
-    Excel expects a hex value in order to fill cells
-    This function allows you to supply standard RGB values to be converted to hex.
-    """
-
-    if not isinstance(rgb, (tuple, list)):
-        raise TypeError("Argument supplied must be a tuple or list of RGB values")
-    bgr = (rgb[2], rgb[1], rgb[0])
-    str_value = "%02x%02x%02x" % bgr
-    hexcode = int(str_value, 16)
-    return hexcode
-
-
-def excel_date(date1: pd.Series | dt.datetime | dt.date) -> float:
-    """
-    Convert a datetime.datetime or pandas.Series object into an Excel date float
-    """
-    if isinstance(date1, (dt.datetime, dt.date)):
-        if isinstance(date1, dt.date):
-            date1 = dt.datetime.combine(date1, dt.datetime.min.time())
-        temp = dt.datetime(1899, 12, 30)  # Excels epoch. Note, not 31st Dec but 30th
-        delta = date1 - temp
-        return float(delta.days) + (float(delta.seconds) / 86400)
-    elif isinstance(date1, pd.Series):
-        temp = pd.Timestamp(dt.datetime(1899, 12, 30))
-        delta = date1 - temp
-        return delta.dt.days + (delta.dt.seconds / 86400)
-    else:
-        raise TypeError("Must supply datetime, date or pd.Series")
+from utils import col2num, num2col, excel_date, rgb2hex
 
 
 class ExcelSpreadSheet:
@@ -325,7 +265,7 @@ class ExcelSpreadSheet:
         args:
             data : A pandas dataframe
             sheet : the name or index of the sheet to be populated, must be a valid sheet in the active Workbook.
-            cell_ref: An Excel cell reference to start writing from - overrides any other arguements supplied
+            cell_ref: An Excel cell reference to start writing from - overrides any other arguments supplied
             start_row : the starting row to write data to (default=2)
             start_col : the starting column to write data to (default=1)
             headers  : Boolean flag, if true the column names of the dataframe will be printed (default=False)
@@ -501,13 +441,13 @@ class ExcelSpreadSheet:
         Protect a worksheet
         args:
             sheet : The name/index of the worksheet to protect
-            password : A password to lock the sheets withb(Optional)
+            password : A password to lock the sheets with (Optional)
             draw_objects: Protect shapes (Optional: Default=True)
             contents: Protect contents (Optional: Default=True)
-            scenarios: Protect scenatios (Optional: Default=True)
+            scenarios: Protect scenarios (Optional: Default=True)
             allow_sort: Allow user to sort (Optional: Default=False)
             allow_filter: Allow user to filter (Optional: Default=False)
-            enable_selection: Set to false to disable user selecting cells (Optional: Default=True)
+            enable_selection: Set as false to disable user selecting cells (Optional: Default=True)
         """
         self._validate_workbook()
         self._validate_worksheet(sheet)
@@ -615,7 +555,7 @@ class ExcelSpreadSheet:
         Reads in a range of an Excel spreadsheet and attempts to return a pandas dataframe object.
         args:
             sheet: The sheet name/index to read from
-            cellref : An Excel cell reference to write from
+            cell_ref : An Excel cell reference to write from
             row : A row number to read from
             col : A column name or index to read from
         """
@@ -715,14 +655,14 @@ class ExcelSpreadSheet:
                 else:
                     exec("_format.{}".format(self.format_args["Format"][key]))
 
-    def format_range(self, sheet: str | int, excel_range: str = None, start_col: str | int = None, start_row:int = None,
-                     end_col: str | int = None, end_row: int = None, **kwargs):
+    def format_range(self, sheet: str | int, excel_range: str = None, start_col: str | int = None,
+                     start_row: int = None, end_col: str | int = None, end_row: int = None, **kwargs):
         """
         Add formatting to a range.
         args:
             sheet: The sheet to add formatting to.
             excel_range: The range to format
-            startcol, endcol, startrow, endrow: Integers representing the co-ordinates of a range
+            start_col, end_col, start_row, end_row: Integers representing the co-ordinates of a range
             **kwargs: snake_case'd formatting arguments i.e. font_colour, font_size, merge, bold, interior_colour ...
                       (see self.get_format_args for valid values)
         """
