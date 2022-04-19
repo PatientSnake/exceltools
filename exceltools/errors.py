@@ -1,3 +1,6 @@
+"""
+Module used to handle custom error classes
+"""
 class Error(Exception):
     """Base Class for Exceptions"""
     def __init__(self, msg, *args):
@@ -27,7 +30,7 @@ class InvalidSheetError(Error):
 class ProtectedSheetError(InvalidSheetError):
     """Raised when a sheet is protected"""
 
-    msg = "The sheet '{sheet_name}' is protected, please unprotect before attempting to write to it"
+    msg = "The sheet '{0}' is protected, please unprotect before attempting to write to it"
 
     def __init__(self, sheet_name):
         super().__init__(ProtectedSheetError.msg, sheet_name)
