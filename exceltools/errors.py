@@ -1,6 +1,8 @@
 """
 Module used to handle custom error classes
 """
+
+
 class Error(Exception):
     """Base Class for Exceptions"""
     def __init__(self, msg, *args):
