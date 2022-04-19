@@ -9,8 +9,10 @@ exceltools is intended to work alongside pandas and numpy and aids in creating a
 populating spreadsheets programmatically.
 
 ## Usage
+
 ```python
-import exceltools
+
+from exceltools import exceltools
 import pandas as pd
 
 data = pd.read_csv("https://raw.githubusercontent.com/mwaskom/seaborn-data/master/iris.csv")
