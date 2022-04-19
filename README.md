@@ -82,11 +82,11 @@ excel_date(pd.Series([pd.Timestamp(1999,6,26), pd.Timestamp(2020, 1, 1)]))
 # dtype: float64
 ```
 ## rgb2hex
-I found it easier to work with RGB values when picking colours, so this function converts an RGB colour to an int
+I found it easier to work with RGB values when picking colours, so this function converts an RGB colour tuple to an int
 expected by pywin32 Excel calls.
 ```python
 from exceltools import rgb2hex
 
-rgb2hex(255, 0, 120)
+rgb2hex((255, 0, 120))
 # returns 7864575
 ```
